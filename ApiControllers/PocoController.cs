@@ -27,21 +27,23 @@ namespace WebApplication1.ApiControllers
         [HttpGet("{id}")]
         public string Get(int id)
         {
-            return "value";
+            return $"{id}";
         }
 
+
         // POST api/<PocoController>
+        // Change: sp to sql 
         [HttpPost]
-        public IActionResult Post([FromForm] string cn, [FromForm] string sp, [FromForm] string cls)
+        public IActionResult Post([FromForm] string cn, [FromForm] string sql, [FromForm] string cls)
         {
 
-            string apikeyname = "";
-            string apikey = "";
+            //string apikeyname = "";
+            //string apikey = "";
 
-            string pattern = @"^[A-Za-z0-9_]+$";
+            //string pattern = @"^[A-Za-z0-9_]+$";
 
-            // 使用正則表達式進行驗證
-            Match match = Regex.Match(sp, pattern);
+            //// 使用正則表達式進行驗證
+            //Match match = Regex.Match(sp, pattern);
 
             AppSettings settings = new AppSettings(_configuration);
             bool flg = false;
@@ -64,11 +66,11 @@ namespace WebApplication1.ApiControllers
 
             string connstr = _configuration.GetConnectionString(cn);
             string res = "";
-            if (match.Success && flg)
+            if (flg)
             {
                 using (var connection = new SqlConnection(connstr))
                 {
-                    res = connection.GenerateClass($"exec {sp};", className: cls);
+                    res = connection.GenerateClass($"{sql};", className: cls);
                 }
             } else
             {
@@ -77,16 +79,6 @@ namespace WebApplication1.ApiControllers
             return Content($"{res}");
         }
 
-        // PUT api/<PocoController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
 
-        // DELETE api/<PocoController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
-        }
     }
 }
